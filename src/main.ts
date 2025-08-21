@@ -1,5 +1,9 @@
-import { Canvas } from "./entities/Canvas.ts";
 import { Game } from "./entities/Game.ts";
+import { Cube } from "./entities/Cube.ts";
+import type { IGameObject } from "./types/GameObject.ts";
 
-const game = new Game(new Canvas());
+const cube = new Cube();
+const objects: IGameObject[] = [cube];
+
+const game = new Game(objects);
 game.run();
