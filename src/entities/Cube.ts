@@ -27,7 +27,6 @@ export class Cube extends Canvas implements IGameObject {
 //   ArrowLeft: false,
 //   ArrowRight: false
 // };
-//
 // function setupArrowKeysListener(callback: (direction: { x: number; y: number }) => void) {
 //   document.addEventListener('keydown', (event) => {
 //     if (event.code in keys) {
