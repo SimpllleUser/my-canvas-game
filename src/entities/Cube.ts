@@ -1,5 +1,5 @@
 import { Canvas } from "./Canvas.ts";
-import type { IObject } from "../types/GameObject.ts";
+import type { IGameObject } from "../types/GameObject.ts";
 
 const ELEMENT = {
   width: 15,
@@ -7,7 +7,7 @@ const ELEMENT = {
   color: "blue",
 };
 
-export class Cube extends Canvas implements IObject {
+export class Cube extends Canvas implements IGameObject {
   element = ELEMENT;
 
   constructor() {
