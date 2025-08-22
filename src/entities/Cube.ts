@@ -42,20 +42,19 @@ export class Cube extends Canvas implements IGameObject {
       this.moveLeft(event, true);
       this.moveUp(event, true);
       this.moveBottom(event, true);
-      this.setMoveDirection();
     });
     addEventListener("keyup", (event) => {
       this.moveRight(event, false);
       this.moveLeft(event, false);
       this.moveUp(event, false);
       this.moveBottom(event, false);
-      this.setMoveDirection();
     });
   }
 
   draw() {
     this.ctx.save();
     this.ctx.fillStyle = this.element.color;
+    this.canMove() && this.setMoveDirection();
     this.ctx.fillRect(
       this.position.x,
       this.position.y,
@@ -65,17 +64,35 @@ export class Cube extends Canvas implements IGameObject {
     this.ctx.restore();
   }
 
+  canMove() {
+    const canRight =
+      this.position.x + this.element.width + this.velocity < this.canvas.width;
+    const canLeft = this.position.x > 0;
+    const canUp = this.position.y > 0;
+    const canDown =
+      this.position.y + this.element.height + this.velocity <
+      this.canvas.height;
+
+    return {
+      canRight,
+      canLeft,
+      canUp,
+      canDown,
+    };
+  }
+
   setMoveDirection() {
-    if (this.direction.Right) {
+    const { canRight, canLeft, canUp, canDown } = this.canMove();
+    if (this.direction.Right && canRight) {
       this.position.x += this.velocity;
     }
-    if (this.direction.Left) {
+    if (this.direction.Left && canLeft) {
       this.position.x -= this.velocity;
     }
-    if (this.direction.Up) {
+    if (this.direction.Up && canUp) {
       this.position.y -= this.velocity;
     }
-    if (this.direction.Down) {
+    if (this.direction.Down && canDown) {
       this.position.y += this.velocity;
     }
   }
