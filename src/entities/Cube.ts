@@ -1,6 +1,7 @@
 import { Canvas } from "./Canvas.ts";
 import type { IGameObject } from "../types/GameObject.ts";
 import type { IPosition } from "../types/Main.ts";
+import { Projectile } from "./Projectile.ts";
 
 const ELEMENT = {
   width: 50,
@@ -21,6 +22,7 @@ export class Cube extends Canvas implements IGameObject {
   position: IPosition;
   direction: Directions;
   mousePosition: IPosition;
+  projectile: Projectile;
 
   constructor() {
     super();
@@ -28,6 +30,8 @@ export class Cube extends Canvas implements IGameObject {
     this.position = { x: 0, y: 0 };
     this.direction = { Up: false, Down: false, Left: false, Right: false };
     this.mousePosition = { x: 0, y: 0 };
+
+    this.projectile = new Projectile();
 
     this.initEventListeners();
     this.animate();
@@ -65,11 +69,15 @@ export class Cube extends Canvas implements IGameObject {
           x: canvasX - cubeCenterX,
           y: canvasY - cubeCenterY,
         };
+
+        this.projectile.setStart({ x: cubeCenterX, y: cubeCenterY });
+        this.projectile.setTo({ x: canvasX, y: canvasY });
       }
     });
 
     addEventListener("mousedown", (event) => {
       console.log(event);
+      this.projectile.canRender = true;
     });
   }
 
@@ -113,6 +121,7 @@ export class Cube extends Canvas implements IGameObject {
       this.element.width,
       this.element.height,
     );
+    this.projectile.draw();
     this.ctx.restore();
   }
 
