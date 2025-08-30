@@ -27,6 +27,7 @@ export class Cube extends Canvas implements IGameObject {
   center: IPosition;
   bullets: Bullet[];
   nextBulletIndex = 0;
+  bulletAmount = 10;
 
   constructor() {
     super();
@@ -36,9 +37,29 @@ export class Cube extends Canvas implements IGameObject {
     this.mousePosition = { x: 0, y: 0 };
     this.center = { x: 0, y: 0 };
     this.projectile = new Projectile();
-    this.bullets = Array.from({ length: 10 }, () => new Bullet());
+    this.bullets = Array.from(
+      { length: this.bulletAmount },
+      () => new Bullet(),
+    );
     this.initEventListeners();
     this.animate();
+    this.initRenderBulletCount();
+  }
+
+  getBulletAmountText() {
+    return `Bullets: ${this.bulletAmount - this.nextBulletIndex}`;
+  }
+
+  initRenderBulletCount() {
+    const bulletCountBody = document.createElement("div");
+    bulletCountBody.setAttribute("id", "bullet-count");
+    bulletCountBody.innerText = this.getBulletAmountText();
+    document.body.appendChild(bulletCountBody);
+  }
+
+  updateBulletCountText() {
+    document.querySelector("#bullet-count")!.innerHTML =
+      this.getBulletAmountText();
   }
 
   initEventListeners() {
@@ -89,6 +110,7 @@ export class Cube extends Canvas implements IGameObject {
       );
       this.bullets[this.nextBulletIndex].activate();
       this.nextBulletIndex++;
+      this.updateBulletCountText();
     });
   }
 
