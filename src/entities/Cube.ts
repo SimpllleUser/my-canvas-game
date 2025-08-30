@@ -2,6 +2,7 @@ import { Canvas } from "./Canvas.ts";
 import type { IGameObject } from "../types/GameObject.ts";
 import type { IPosition } from "../types/Main.ts";
 import { Projectile } from "./Projectile.ts";
+import { Bullet } from "./Bullet.ts";
 
 const ELEMENT = {
   width: 50,
@@ -24,6 +25,7 @@ export class Cube extends Canvas implements IGameObject {
   mousePosition: IPosition;
   projectile: Projectile;
   center: IPosition;
+  bullet: Bullet;
 
   constructor() {
     super();
@@ -33,7 +35,7 @@ export class Cube extends Canvas implements IGameObject {
     this.mousePosition = { x: 0, y: 0 };
     this.center = { x: 0, y: 0 };
     this.projectile = new Projectile();
-
+    this.bullet = new Bullet();
     this.initEventListeners();
     this.animate();
   }
@@ -55,9 +57,9 @@ export class Cube extends Canvas implements IGameObject {
 
     this.canvas.addEventListener("mousemove", ({ x, y }: MouseEvent) => {
       const { scale } = this.getData();
-
       const canvasX = x / scale;
       const canvasY = y / scale;
+
       if (
         canvasX > 0 &&
         canvasY > 0 &&
@@ -72,26 +74,28 @@ export class Cube extends Canvas implements IGameObject {
           x: canvasX - this.center.x,
           y: canvasY - this.center.y,
         };
-
         this.projectile.setStart(this.center);
         this.projectile.setTo({ x: canvasX, y: canvasY });
       }
     });
 
-    addEventListener("mousedown", () => {
+    this.canvas.addEventListener("mousedown", () => {
       this.projectile.canRender = true;
-      // const { directionX, directionY } = this.calculationDirectionForBullet();
+      const { directionX, directionY } = this.calculationDirectionForBullet();
+      this.bullet.setPosition(this.center);
+      this.bullet.setDirection({ x: directionX, y: directionY });
+      this.bullet.activate();
     });
   }
-  calculationDirectionForBullet() {
-    const { x: x1, y: y1 } = this.mousePosition;
-    // const { x: x2, y: y2 } = this.center;
 
-    const directionX = Math.sign(x1);
-    const directionY = Math.sign(y1);
-    // console.log(directionX, directionY);
+  calculationDirectionForBullet() {
+    const { x: dx, y: dy } = this.mousePosition;
+    const magnitude = Math.sqrt(dx * dx + dy * dy);
+    const directionX = magnitude > 0 ? dx / magnitude : 0;
+    const directionY = magnitude > 0 ? dy / magnitude : 0;
     return { directionX, directionY };
   }
+
   sightCalculationAngel() {
     const { x, y } = this.mousePosition;
     const angle = Math.atan2(y, x);
@@ -121,8 +125,12 @@ export class Cube extends Canvas implements IGameObject {
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Очищаємо canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
+
+    this.bullet.update();
+    this.bullet.draw();
+
     this.ctx.fillStyle = this.element.color;
     this.canMove() && this.setMoveDirection();
     this.drawSight();
@@ -132,6 +140,7 @@ export class Cube extends Canvas implements IGameObject {
       this.element.width,
       this.element.height,
     );
+
     this.projectile.draw();
     this.ctx.restore();
   }
