@@ -81,9 +81,8 @@ export class Cube extends Canvas implements IGameObject {
 
     this.canvas.addEventListener("mousedown", () => {
       this.projectile.canRender = true;
-      const { directionX, directionY } = this.calculationDirectionForBullet();
       this.bullet.setPosition(this.center);
-      this.bullet.setDirection({ x: directionX, y: directionY });
+      this.bullet.setDirection(this.calculationDirectionForBullet());
       this.bullet.activate();
     });
   }
@@ -93,7 +92,7 @@ export class Cube extends Canvas implements IGameObject {
     const magnitude = Math.sqrt(dx * dx + dy * dy);
     const directionX = magnitude > 0 ? dx / magnitude : 0;
     const directionY = magnitude > 0 ? dy / magnitude : 0;
-    return { directionX, directionY };
+    return { x: directionX, y: directionY };
   }
 
   sightCalculationAngel() {
