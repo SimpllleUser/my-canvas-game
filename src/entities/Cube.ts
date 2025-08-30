@@ -23,6 +23,7 @@ export class Cube extends Canvas implements IGameObject {
   direction: Directions;
   mousePosition: IPosition;
   projectile: Projectile;
+  center: IPosition;
 
   constructor() {
     super();
@@ -30,7 +31,7 @@ export class Cube extends Canvas implements IGameObject {
     this.position = { x: 0, y: 0 };
     this.direction = { Up: false, Down: false, Left: false, Right: false };
     this.mousePosition = { x: 0, y: 0 };
-
+    this.center = { x: 0, y: 0 };
     this.projectile = new Projectile();
 
     this.initEventListeners();
@@ -63,24 +64,34 @@ export class Cube extends Canvas implements IGameObject {
         canvasX < this.canvas.width &&
         canvasY < this.canvas.height
       ) {
-        const cubeCenterX = this.position.x + this.element.width / 2;
-        const cubeCenterY = this.position.y + this.element.height / 2;
+        this.center = {
+          x: this.position.x + this.element.width / 2,
+          y: this.position.y + this.element.height / 2,
+        };
         this.mousePosition = {
-          x: canvasX - cubeCenterX,
-          y: canvasY - cubeCenterY,
+          x: canvasX - this.center.x,
+          y: canvasY - this.center.y,
         };
 
-        this.projectile.setStart({ x: cubeCenterX, y: cubeCenterY });
+        this.projectile.setStart(this.center);
         this.projectile.setTo({ x: canvasX, y: canvasY });
       }
     });
 
-    addEventListener("mousedown", (event) => {
-      console.log(event);
+    addEventListener("mousedown", () => {
       this.projectile.canRender = true;
+      // const { directionX, directionY } = this.calculationDirectionForBullet();
     });
   }
+  calculationDirectionForBullet() {
+    const { x: x1, y: y1 } = this.mousePosition;
+    // const { x: x2, y: y2 } = this.center;
 
+    const directionX = Math.sign(x1);
+    const directionY = Math.sign(y1);
+    // console.log(directionX, directionY);
+    return { directionX, directionY };
+  }
   sightCalculationAngel() {
     const { x, y } = this.mousePosition;
     const angle = Math.atan2(y, x);
