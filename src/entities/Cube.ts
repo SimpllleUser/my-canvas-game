@@ -25,7 +25,8 @@ export class Cube extends Canvas implements IGameObject {
   mousePosition: IPosition;
   projectile: Projectile;
   center: IPosition;
-  bullet: Bullet;
+  bullets: Bullet[];
+  nextBulletIndex = 0;
 
   constructor() {
     super();
@@ -35,7 +36,7 @@ export class Cube extends Canvas implements IGameObject {
     this.mousePosition = { x: 0, y: 0 };
     this.center = { x: 0, y: 0 };
     this.projectile = new Projectile();
-    this.bullet = new Bullet();
+    this.bullets = Array.from({ length: 10 }, () => new Bullet());
     this.initEventListeners();
     this.animate();
   }
@@ -81,9 +82,13 @@ export class Cube extends Canvas implements IGameObject {
 
     this.canvas.addEventListener("mousedown", () => {
       this.projectile.canRender = true;
-      this.bullet.setPosition(this.center);
-      this.bullet.setDirection(this.calculationDirectionForBullet());
-      this.bullet.activate();
+      if (this.nextBulletIndex >= 10) return;
+      this.bullets[this.nextBulletIndex].setPosition(this.center);
+      this.bullets[this.nextBulletIndex].setDirection(
+        this.calculationDirectionForBullet(),
+      );
+      this.bullets[this.nextBulletIndex].activate();
+      this.nextBulletIndex++;
     });
   }
 
@@ -127,8 +132,10 @@ export class Cube extends Canvas implements IGameObject {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
 
-    this.bullet.update();
-    this.bullet.draw();
+    this.bullets.forEach((bullet) => {
+      bullet.update();
+      bullet.draw();
+    });
 
     this.ctx.fillStyle = this.element.color;
     this.canMove() && this.setMoveDirection();
