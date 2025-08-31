@@ -18,7 +18,7 @@ export class Bullet extends Canvas {
     this.position = { x: 0, y: 0 };
     this.direction = { x: 0, y: 0 };
     this.isActive = false;
-    this.speed = 5;
+    this.speed = 10;
   }
 
   setPosition({ x, y }: IPosition) {
