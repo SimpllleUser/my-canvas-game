@@ -4,6 +4,7 @@ import type { IPosition } from "../types/Main.ts";
 import { Projectile } from "./Projectile.ts";
 import { Bullet } from "./Bullet.ts";
 import { BulletIndicator } from "./BulletIndicator.ts";
+import { Sight } from "./Sight.ts";
 
 const ELEMENT = {
   width: 50,
@@ -30,6 +31,7 @@ export class Cube extends Canvas implements IGameObject {
   nextBulletIndex = 0;
   bulletAmount = 10;
   bulletIndicator: BulletIndicator;
+  sight: Sight;
 
   constructor() {
     super();
@@ -39,6 +41,7 @@ export class Cube extends Canvas implements IGameObject {
     this.mousePosition = { x: 0, y: 0 };
     this.center = { x: 0, y: 0 };
     this.projectile = new Projectile();
+    this.sight = new Sight();
     this.bullets = Array.from(
       { length: this.bulletAmount },
       () => new Bullet(),
@@ -101,6 +104,7 @@ export class Cube extends Canvas implements IGameObject {
         };
         this.projectile.setStart(this.center);
         this.projectile.setTo({ x: canvasX, y: canvasY });
+        this.sight.updatePosition({ x: canvasX, y: canvasY });
       }
     });
 
@@ -175,6 +179,7 @@ export class Cube extends Canvas implements IGameObject {
 
     this.projectile.draw();
     this.bulletIndicator.draw();
+    this.sight.draw();
     this.ctx.restore();
   }
 
