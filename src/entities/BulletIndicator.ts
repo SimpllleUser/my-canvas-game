@@ -80,6 +80,7 @@ export class BulletIndicator extends Canvas {
   reset(onReset: CallableFunction = () => {}) {
     const newBullets = this.getFullBulletPoints();
     let indexBullet = 0;
+    this.bulletPoints = [];
     let interval = setInterval(() => {
       this.bulletPoints.push(newBullets[indexBullet]);
       indexBullet++;

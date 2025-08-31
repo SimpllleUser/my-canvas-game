@@ -58,7 +58,7 @@ export class Cube extends Canvas implements IGameObject {
     const bulletCountBody = document.createElement("div");
     bulletCountBody.setAttribute("id", "bullet-count");
     bulletCountBody.innerText = this.getBulletAmountText();
-    document.body.appendChild(bulletCountBody);
+    document.querySelector("#app")!.appendChild(bulletCountBody);
   }
 
   updateBulletCountText() {
@@ -86,6 +86,7 @@ export class Cube extends Canvas implements IGameObject {
   initEventListeners() {
     addEventListener("keydown", (event) => {
       if (event.key.toLowerCase() === "r") {
+        if (this.fireBlockingState) return;
         this.rechargeBullets();
       }
       this.moveRight(event, true);
