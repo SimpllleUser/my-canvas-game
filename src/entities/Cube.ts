@@ -30,6 +30,7 @@ export class Cube extends Canvas implements IGameObject {
   bulletAmount = 10;
   bulletIndicator: BulletIndicator;
   sight: Sight;
+  fireBlockingState = false;
 
   constructor() {
     super();
@@ -65,8 +66,28 @@ export class Cube extends Canvas implements IGameObject {
       this.getBulletAmountText();
   }
 
+  setFireBlockingState(state: boolean) {
+    this.fireBlockingState = state;
+  }
+
+  rechargeBullets() {
+    this.setFireBlockingState(true);
+    this.nextBulletIndex = 0;
+    this.bulletAmount = 0;
+    this.updateBulletCountText();
+    this.bulletIndicator.reset(() => {
+      this.bulletAmount++;
+      this.updateBulletCountText();
+      const isFullBullets = this.bulletAmount === 10;
+      this.setFireBlockingState(!isFullBullets);
+    });
+  }
+
   initEventListeners() {
     addEventListener("keydown", (event) => {
+      if (event.key.toLowerCase() === "r") {
+        this.rechargeBullets();
+      }
       this.moveRight(event, true);
       this.moveLeft(event, true);
       this.moveUp(event, true);
@@ -105,6 +126,7 @@ export class Cube extends Canvas implements IGameObject {
     });
 
     this.canvas.addEventListener("mousedown", () => {
+      if (this.fireBlockingState) return;
       if (this.nextBulletIndex >= 10) return;
       this.bullets[this.nextBulletIndex].setPosition(this.center);
       this.bullets[this.nextBulletIndex].setDirection(

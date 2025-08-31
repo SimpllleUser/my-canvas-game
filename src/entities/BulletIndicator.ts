@@ -19,7 +19,11 @@ export class BulletIndicator extends Canvas {
   constructor() {
     super();
     this.position = { x: 0, y: this.canvas.height - 20 };
-    this.bulletPoints = Array.from({ length: 10 }).map((_, index) => ({
+    this.bulletPoints = this.getFullBulletPoints();
+  }
+
+  getFullBulletPoints() {
+    return Array.from({ length: 10 }).map((_, index) => ({
       x: elementBulletPoint.width * index,
       y: this.canvas.height - 20,
     }));
@@ -71,5 +75,16 @@ export class BulletIndicator extends Canvas {
     this.bulletPoints.forEach((bulletPoint) => {
       this.drawBulletPoints(bulletPoint);
     });
+  }
+
+  reset(onReset: CallableFunction = () => {}) {
+    const newBullets = this.getFullBulletPoints();
+    let indexBullet = 0;
+    let interval = setInterval(() => {
+      this.bulletPoints.push(newBullets[indexBullet]);
+      indexBullet++;
+      onReset();
+      if (indexBullet >= newBullets.length) clearInterval(interval);
+    }, 200);
   }
 }
