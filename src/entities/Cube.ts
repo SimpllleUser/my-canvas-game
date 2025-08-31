@@ -1,7 +1,6 @@
 import { Canvas } from "./Canvas.ts";
 import type { IGameObject } from "../types/GameObject.ts";
 import type { IPosition } from "../types/Main.ts";
-import { Projectile } from "./Projectile.ts";
 import { Bullet } from "./Bullet.ts";
 import { BulletIndicator } from "./BulletIndicator.ts";
 import { Sight } from "./Sight.ts";
@@ -25,7 +24,6 @@ export class Cube extends Canvas implements IGameObject {
   position: IPosition;
   direction: Directions;
   mousePosition: IPosition;
-  projectile: Projectile;
   center: IPosition;
   bullets: Bullet[];
   nextBulletIndex = 0;
@@ -40,7 +38,6 @@ export class Cube extends Canvas implements IGameObject {
     this.direction = { Up: false, Down: false, Left: false, Right: false };
     this.mousePosition = { x: 0, y: 0 };
     this.center = { x: 0, y: 0 };
-    this.projectile = new Projectile();
     this.sight = new Sight();
     this.bullets = Array.from(
       { length: this.bulletAmount },
@@ -102,14 +99,12 @@ export class Cube extends Canvas implements IGameObject {
           x: canvasX - this.center.x,
           y: canvasY - this.center.y,
         };
-        this.projectile.setStart(this.center);
-        this.projectile.setTo({ x: canvasX, y: canvasY });
+
         this.sight.updatePosition({ x: canvasX, y: canvasY });
       }
     });
 
     this.canvas.addEventListener("mousedown", () => {
-      this.projectile.canRender = true;
       if (this.nextBulletIndex >= 10) return;
       this.bullets[this.nextBulletIndex].setPosition(this.center);
       this.bullets[this.nextBulletIndex].setDirection(
@@ -177,7 +172,6 @@ export class Cube extends Canvas implements IGameObject {
       this.element.height,
     );
 
-    this.projectile.draw();
     this.bulletIndicator.draw();
     this.sight.draw();
     this.ctx.restore();
