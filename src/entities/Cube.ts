@@ -1,15 +1,17 @@
 import { Canvas } from "./Canvas.ts";
 import type { IGameObject } from "../types/GameObject.ts";
 import type { IPosition } from "../types/Main.ts";
-import { Bullet } from "./Bullet.ts";
-import { BulletIndicator } from "./BulletIndicator.ts";
 import { Sight } from "./Sight.ts";
+import type { BaseWeapon } from "./BaseWeapon.ts";
 
 const ELEMENT = {
   width: 50,
   height: 50,
   color: "blue",
 };
+
+const VELOCITY = 10;
+const getBasePosition = () => ({ x: 0, y: 0 });
 
 interface Directions {
   Up: boolean;
@@ -25,70 +27,24 @@ export class Cube extends Canvas implements IGameObject {
   direction: Directions;
   mousePosition: IPosition;
   center: IPosition;
-  bullets: Bullet[];
-  nextBulletIndex = 0;
-  bulletAmount = 10;
-  bulletIndicator: BulletIndicator;
+  weapon: BaseWeapon;
   sight: Sight;
-  fireBlockingState = false;
 
-  constructor() {
+  constructor(weapon: BaseWeapon) {
     super();
-    this.velocity = 10;
-    this.position = { x: 0, y: 0 };
+    this.velocity = VELOCITY;
+    this.position = getBasePosition();
     this.direction = { Up: false, Down: false, Left: false, Right: false };
-    this.mousePosition = { x: 0, y: 0 };
-    this.center = { x: 0, y: 0 };
+    this.mousePosition = getBasePosition();
+    this.center = getBasePosition();
     this.sight = new Sight();
-    this.bullets = Array.from(
-      { length: this.bulletAmount },
-      () => new Bullet(),
-    );
-    this.bulletIndicator = new BulletIndicator();
     this.initEventListeners();
     this.animate();
-    this.initRenderBulletCount();
-  }
-
-  getBulletAmountText() {
-    return `Bullets: ${this.bulletAmount - this.nextBulletIndex}`;
-  }
-
-  initRenderBulletCount() {
-    const bulletCountBody = document.createElement("div");
-    bulletCountBody.setAttribute("id", "bullet-count");
-    bulletCountBody.innerText = this.getBulletAmountText();
-    document.querySelector("#app")!.appendChild(bulletCountBody);
-  }
-
-  updateBulletCountText() {
-    document.querySelector("#bullet-count")!.innerHTML =
-      this.getBulletAmountText();
-  }
-
-  setFireBlockingState(state: boolean) {
-    this.fireBlockingState = state;
-  }
-
-  rechargeBullets() {
-    this.setFireBlockingState(true);
-    this.nextBulletIndex = 0;
-    this.bulletAmount = 0;
-    this.updateBulletCountText();
-    this.bulletIndicator.reset(() => {
-      this.bulletAmount++;
-      this.updateBulletCountText();
-      const isFullBullets = this.bulletAmount === 10;
-      this.setFireBlockingState(!isFullBullets);
-    });
+    this.weapon = weapon;
   }
 
   initEventListeners() {
     addEventListener("keydown", (event) => {
-      if (event.key.toLowerCase() === "r") {
-        if (this.fireBlockingState) return;
-        this.rechargeBullets();
-      }
       this.moveRight(event, true);
       this.moveLeft(event, true);
       this.moveUp(event, true);
@@ -122,30 +78,12 @@ export class Cube extends Canvas implements IGameObject {
           y: canvasY - this.center.y,
         };
 
+        this.weapon.updateCenter(this.center);
+        this.weapon.updateMousePosition(this.mousePosition);
+
         this.sight.updatePosition({ x: canvasX, y: canvasY });
       }
     });
-
-    this.canvas.addEventListener("mousedown", () => {
-      if (this.fireBlockingState) return;
-      if (this.nextBulletIndex >= 10) return;
-      this.bullets[this.nextBulletIndex].setPosition(this.center);
-      this.bullets[this.nextBulletIndex].setDirection(
-        this.calculationDirectionForBullet(),
-      );
-      this.bullets[this.nextBulletIndex].activate();
-      this.nextBulletIndex++;
-      this.updateBulletCountText();
-      this.bulletIndicator.update();
-    });
-  }
-
-  calculationDirectionForBullet() {
-    const { x: dx, y: dy } = this.mousePosition;
-    const magnitude = Math.sqrt(dx * dx + dy * dy);
-    const directionX = magnitude > 0 ? dx / magnitude : 0;
-    const directionY = magnitude > 0 ? dy / magnitude : 0;
-    return { x: directionX, y: directionY };
   }
 
   sightCalculationAngel() {
@@ -180,11 +118,6 @@ export class Cube extends Canvas implements IGameObject {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
 
-    this.bullets.forEach((bullet) => {
-      bullet.update();
-      bullet.draw();
-    });
-
     this.ctx.fillStyle = this.element.color;
     this.canMove() && this.setMoveDirection();
     this.drawSight();
@@ -195,7 +128,7 @@ export class Cube extends Canvas implements IGameObject {
       this.element.height,
     );
 
-    this.bulletIndicator.draw();
+    this.weapon?.draw();
     this.sight.draw();
     this.ctx.restore();
   }
