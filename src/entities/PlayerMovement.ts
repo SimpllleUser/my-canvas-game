@@ -1,4 +1,4 @@
-import type { IPosition } from "../types/Main.ts";
+import type { IElement, IPosition } from "../types/Main.ts";
 import { Canvas } from "./Canvas.ts";
 
 enum KeyCodes {
@@ -8,11 +8,6 @@ enum KeyCodes {
   ArrowDown = 83,
 }
 
-interface IElement {
-  width: number;
-  height: number;
-  color: string;
-}
 // const ELEMENT = {
 //   width: 50,
 //   height: 50,
