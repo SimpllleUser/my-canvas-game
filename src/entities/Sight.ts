@@ -1,5 +1,5 @@
 import { Canvas } from "./Canvas.ts";
-import type { IPosition } from "../types/Main.ts";
+import type { IElement, IPosition } from "../types/Main.ts";
 
 const element = {
   width: 10,
@@ -9,10 +9,12 @@ const element = {
 
 export class Sight extends Canvas {
   position: IPosition;
+  playerElement: IElement;
   gapSize = 10;
 
-  constructor() {
+  constructor(playerElement: IElement) {
     super();
+    this.playerElement = playerElement;
     this.position = { x: 0, y: 0 };
     document.getElementById("canvas")!.style.cursor = "none";
   }
@@ -33,6 +35,34 @@ export class Sight extends Canvas {
       element.width,
       element.height,
     );
+    this.ctx.restore();
+  }
+
+  sightCalculationAngel(mousePosition: IPosition) {
+    const { x, y } = mousePosition;
+    const angle = Math.atan2(y, x);
+    const ARC_WIDTH = Math.PI;
+    return {
+      angle,
+      startAngle: angle - ARC_WIDTH / 2,
+      endAngle: angle + ARC_WIDTH / 2,
+    };
+  }
+
+  drawSight(mousePosition: IPosition, playerPosition: IPosition) {
+    const { startAngle, endAngle } = this.sightCalculationAngel(mousePosition);
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.arc(
+      playerPosition.x + this.playerElement.width / 2,
+      playerPosition.y + this.playerElement.height / 2,
+      this.playerElement.width * 0.6,
+      startAngle,
+      endAngle,
+    );
+    this.ctx.strokeStyle = "orange";
+    this.ctx.lineWidth = 5;
+    this.ctx.stroke();
     this.ctx.restore();
   }
 

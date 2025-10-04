@@ -27,7 +27,7 @@ export class Cube extends Canvas implements IGameObject {
     this.position = getBasePosition();
     this.mousePosition = getBasePosition();
     this.center = getBasePosition();
-    this.sight = new Sight();
+    this.sight = new Sight(this.element);
     this.initEventListeners();
     this.animate();
     this.weapon = weapon;
@@ -63,41 +63,13 @@ export class Cube extends Canvas implements IGameObject {
     });
   }
 
-  sightCalculationAngel() {
-    const { x, y } = this.mousePosition;
-    const angle = Math.atan2(y, x);
-    const ARC_WIDTH = Math.PI;
-    return {
-      angle,
-      startAngle: angle - ARC_WIDTH / 2,
-      endAngle: angle + ARC_WIDTH / 2,
-    };
-  }
-
-  drawSight() {
-    const { startAngle, endAngle } = this.sightCalculationAngel();
-    this.ctx.save();
-    this.ctx.beginPath();
-    this.ctx.arc(
-      this.position.x + this.element.width / 2,
-      this.position.y + this.element.height / 2,
-      this.element.width * 0.6,
-      startAngle,
-      endAngle,
-    );
-    this.ctx.strokeStyle = "orange";
-    this.ctx.lineWidth = 5;
-    this.ctx.stroke();
-    this.ctx.restore();
-  }
-
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
 
     this.ctx.fillStyle = this.element.color;
     this.playerMovement?.setMoveDirection(this.position);
-    this.drawSight();
+    this.sight.drawSight(this.mousePosition, this.position);
     this.ctx.fillRect(
       this.position.x,
       this.position.y,

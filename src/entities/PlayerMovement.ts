@@ -8,12 +8,6 @@ enum KeyCodes {
   ArrowDown = 83,
 }
 
-// const ELEMENT = {
-//   width: 50,
-//   height: 50,
-//   color: "blue",
-// };
-
 interface Directions {
   Up: boolean;
   Down: boolean;
