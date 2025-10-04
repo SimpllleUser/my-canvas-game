@@ -20,6 +20,13 @@ interface Directions {
   Right: boolean;
 }
 
+enum KeyCodes {
+  ArrowRight = 68,
+  ArrowLeft = 65,
+  ArrowUp = 87,
+  ArrowDown = 83,
+}
+
 export class Cube extends Canvas implements IGameObject {
   element = ELEMENT;
   velocity: number;
@@ -45,17 +52,20 @@ export class Cube extends Canvas implements IGameObject {
 
   initEventListeners() {
     addEventListener("keydown", (event) => {
-      this.moveRight(event, true);
-      this.moveLeft(event, true);
-      this.moveUp(event, true);
-      this.moveBottom(event, true);
+      const { keyCode } = event;
+      this.moveRight(keyCode, true);
+      this.moveLeft(keyCode, true);
+      this.moveUp(keyCode, true);
+      this.moveBottom(keyCode, true);
     });
 
     addEventListener("keyup", (event) => {
-      this.moveRight(event, false);
-      this.moveLeft(event, false);
-      this.moveUp(event, false);
-      this.moveBottom(event, false);
+      const { keyCode } = event;
+
+      this.moveRight(keyCode, false);
+      this.moveLeft(keyCode, false);
+      this.moveUp(keyCode, false);
+      this.moveBottom(keyCode, false);
     });
 
     this.canvas.addEventListener("mousemove", ({ x, y }: MouseEvent) => {
@@ -171,26 +181,26 @@ export class Cube extends Canvas implements IGameObject {
     }
   }
 
-  moveRight({ key }: KeyboardEvent, state: boolean) {
-    if (key === "ArrowRight" || key.toLowerCase() === "d") {
+  moveRight(keyCode: KeyCodes, state: boolean) {
+    if (keyCode === KeyCodes.ArrowRight) {
       this.direction.Right = state;
     }
   }
 
-  moveLeft({ key }: KeyboardEvent, state: boolean) {
-    if (key === "ArrowLeft" || key.toLowerCase() === "a") {
+  moveLeft(keyCode: KeyCodes, state: boolean) {
+    if (keyCode === KeyCodes.ArrowLeft) {
       this.direction.Left = state;
     }
   }
 
-  moveUp({ key }: KeyboardEvent, state: boolean) {
-    if (key === "ArrowUp" || key.toLowerCase() === "w") {
+  moveUp(keyCode: KeyCodes, state: boolean) {
+    if (keyCode === KeyCodes.ArrowUp) {
       this.direction.Up = state;
     }
   }
 
-  moveBottom({ key }: KeyboardEvent, state: boolean) {
-    if (key === "ArrowDown" || key.toLowerCase() === "s") {
+  moveBottom(keyCode: KeyCodes, state: boolean) {
+    if (keyCode === KeyCodes.ArrowDown) {
       this.direction.Down = state;
     }
   }
