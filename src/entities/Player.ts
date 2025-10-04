@@ -13,7 +13,7 @@ const ELEMENT = {
 
 const getBasePosition = () => ({ x: 0, y: 0 });
 
-export class Cube extends Canvas implements IGameObject {
+export class Player extends Canvas implements IGameObject {
   element = ELEMENT;
   position: IPosition;
   mousePosition: IPosition;
