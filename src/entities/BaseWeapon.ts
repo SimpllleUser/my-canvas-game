@@ -3,6 +3,8 @@ import { Bullet } from "./Bullet.ts";
 import { Canvas } from "./Canvas.ts";
 import type { IPosition } from "../types/Main.ts";
 
+const KEY_CODE_RELOAD = 82;
+
 export class BaseWeapon extends Canvas {
   bullets: Bullet[];
   nextBulletIndex = 0;
@@ -67,7 +69,7 @@ export class BaseWeapon extends Canvas {
 
   initEventListeners() {
     addEventListener("keydown", (event) => {
-      if (event.key.toLowerCase() === "r") {
+      if (event.keyCode === KEY_CODE_RELOAD) {
         if (this.fireBlockingState) return;
         this.rechargeBullets();
       }
