@@ -11,8 +11,6 @@ const ELEMENT = {
   color: "blue",
 };
 
-const getBasePosition = () => ({ x: 0, y: 0 });
-
 export class Player extends Canvas implements IGameObject {
   element = ELEMENT;
   position: IPosition;
@@ -24,9 +22,9 @@ export class Player extends Canvas implements IGameObject {
 
   constructor(weapon: BaseWeapon) {
     super();
-    this.position = getBasePosition();
-    this.mousePosition = getBasePosition();
-    this.center = getBasePosition();
+    this.position = this.getBasePosition();
+    this.mousePosition = this.getBasePosition();
+    this.center = this.getBasePosition();
     this.sight = new Sight(this.element);
     this.initEventListeners();
     this.animate();

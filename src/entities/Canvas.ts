@@ -29,4 +29,8 @@ export class Canvas {
   getData() {
     return { canvas: this.canvas, ctx: this.ctx, scale: this.scale };
   }
+
+  getBasePosition() {
+    return { x: 0, y: 0 };
+  }
 }
