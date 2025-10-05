@@ -5,14 +5,14 @@ import { Sight } from "./Sight.ts";
 import type { BaseWeapon } from "./BaseWeapon.ts";
 import { PlayerMovement } from "./PlayerMovement.ts";
 
-const ELEMENT = {
+const PLAYER_BODY = {
   width: 50,
   height: 50,
   color: "blue",
 };
 
 export class Player extends Canvas implements IGameObject {
-  element = ELEMENT;
+  element = PLAYER_BODY;
   position: IPosition;
   mousePosition: IPosition;
   center: IPosition;
@@ -29,7 +29,7 @@ export class Player extends Canvas implements IGameObject {
     this.initEventListeners();
     this.animate();
     this.weapon = weapon;
-    this.playerMovement = new PlayerMovement(ELEMENT);
+    this.playerMovement = new PlayerMovement(PLAYER_BODY);
   }
 
   initEventListeners() {
