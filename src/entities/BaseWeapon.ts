@@ -8,19 +8,22 @@ const KEY_CODE_RELOAD = 82;
 export class BaseWeapon extends Canvas {
   bullets: Bullet[];
   nextBulletIndex = 0;
-  bulletAmount = 10;
+  bulletAmount: number;
+  maxBulletAmount: number;
   bulletIndicator: BulletIndicator;
   fireBlockingState: boolean;
   mousePosition: IPosition;
   center: IPosition;
 
-  constructor() {
+  constructor(maxBulletAmount: number) {
     super();
+    this.maxBulletAmount = maxBulletAmount;
+    this.bulletAmount = maxBulletAmount;
     this.bullets = Array.from(
-      { length: this.bulletAmount },
+      { length: this.maxBulletAmount },
       () => new Bullet(),
     );
-    this.bulletIndicator = new BulletIndicator();
+    this.bulletIndicator = new BulletIndicator(maxBulletAmount);
     this.fireBlockingState = false;
     this.initRenderBulletCount();
     this.initEventListeners();
@@ -62,7 +65,7 @@ export class BaseWeapon extends Canvas {
     this.bulletIndicator.reset(() => {
       this.bulletAmount++;
       this.updateBulletCountText();
-      const isFullBullets = this.bulletAmount === 10;
+      const isFullBullets = this.bulletAmount === this.maxBulletAmount;
       this.setFireBlockingState(!isFullBullets);
     });
   }
@@ -79,7 +82,7 @@ export class BaseWeapon extends Canvas {
   initMouseDownEvent() {
     this.canvas.addEventListener("mousedown", () => {
       if (this.fireBlockingState) return;
-      if (this.nextBulletIndex >= 10) return;
+      if (this.nextBulletIndex >= this.maxBulletAmount) return;
       this.bullets[this.nextBulletIndex].setPosition(this.center);
       this.bullets[this.nextBulletIndex].setDirection(
         this.calculationDirectionForBullet(this.mousePosition),

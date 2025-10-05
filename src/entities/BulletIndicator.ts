@@ -15,15 +15,18 @@ const elementBulletPoint = {
 export class BulletIndicator extends Canvas {
   position: IPosition;
   bulletPoints: IPosition[];
-  element = element;
-  constructor() {
+  element: { width: number; height: number };
+  amountOfBullets: number;
+  constructor(amountOfBullets: number) {
     super();
+    this.amountOfBullets = amountOfBullets;
+    this.element = { ...element, width: amountOfBullets * 20 };
     this.position = { x: 0, y: this.canvas.height - 20 };
     this.bulletPoints = this.getFullBulletPoints();
   }
 
   getFullBulletPoints() {
-    return Array.from({ length: 10 }).map((_, index) => ({
+    return Array.from({ length: this.amountOfBullets }).map((_, index) => ({
       x: elementBulletPoint.width * index,
       y: this.canvas.height - 20,
     }));

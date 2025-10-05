@@ -3,7 +3,7 @@ import { Player } from "./entities/Player.ts";
 import type { IGameObject } from "./types/GameObject.ts";
 import { BaseWeapon } from "./entities/BaseWeapon.ts";
 
-const baseWeapon = new BaseWeapon();
+const baseWeapon = new BaseWeapon(25);
 const cube = new Player(baseWeapon);
 const objects: IGameObject[] = [cube];
 
