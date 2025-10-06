@@ -80,7 +80,7 @@ export class BulletIndicator extends Canvas {
     });
   }
 
-  reset(onReset: CallableFunction = () => {}) {
+  reset(onReset: CallableFunction = () => {}, intervalDuration?: number) {
     const newBullets = this.getFullBulletPoints();
     let indexBullet = 0;
     this.bulletPoints = [];
@@ -89,6 +89,6 @@ export class BulletIndicator extends Canvas {
       indexBullet++;
       onReset();
       if (indexBullet >= newBullets.length) clearInterval(interval);
-    }, 200);
+    }, intervalDuration);
   }
 }

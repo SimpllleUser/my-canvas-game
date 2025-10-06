@@ -32,6 +32,11 @@ export class Player extends Canvas implements IGameObject {
     this.playerMovement = new PlayerMovement(PLAYER_BODY);
   }
 
+  changeWeapon(weapon: BaseWeapon) {
+    this.weapon = weapon;
+    this.weapon.rechargeBullets();
+  }
+
   initEventListeners() {
     this.canvas.addEventListener("mousemove", ({ x, y }: MouseEvent) => {
       const { scale } = this.getData();

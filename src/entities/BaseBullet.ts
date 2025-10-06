@@ -20,7 +20,7 @@ export class BaseBullet extends Canvas {
     this.position = this.getBasePosition();
     this.direction = this.getBasePosition();
     this.isActive = false;
-    this.speed = 10;
+    this.speed = 5;
     this.center = this.getBasePosition();
     this.mousePosition = this.getBasePosition();
   }

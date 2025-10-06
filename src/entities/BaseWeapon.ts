@@ -44,7 +44,8 @@ export class BaseWeapon extends Canvas {
     const bulletCountBody = document.createElement("div");
     bulletCountBody.setAttribute("id", "bullet-count");
     bulletCountBody.innerText = this.getBulletAmountText();
-    document.querySelector("#app")!.appendChild(bulletCountBody);
+    if (!document.querySelector("#bullet-count"))
+      document.querySelector("#app")!.appendChild(bulletCountBody);
   }
 
   updateBulletCountText() {
