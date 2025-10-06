@@ -7,18 +7,22 @@ const element = {
   color: "red",
 };
 
-export class Bullet extends Canvas {
+export class BaseBullet extends Canvas {
   element = element;
   position: IPosition;
   direction: IPosition;
   isActive: boolean;
   speed: number;
+  center: IPosition;
+  mousePosition: IPosition;
   constructor() {
     super();
-    this.position = { x: 0, y: 0 };
-    this.direction = { x: 0, y: 0 };
+    this.position = this.getBasePosition();
+    this.direction = this.getBasePosition();
     this.isActive = false;
     this.speed = 10;
+    this.center = this.getBasePosition();
+    this.mousePosition = this.getBasePosition();
   }
 
   setPosition({ x, y }: IPosition) {
@@ -59,5 +63,8 @@ export class Bullet extends Canvas {
     if (this.position.x > this.canvas.width || this.position.x < 0) {
       this.deactivate();
     }
+  }
+  setMousePosition(position: IPosition) {
+    this.mousePosition = position;
   }
 }

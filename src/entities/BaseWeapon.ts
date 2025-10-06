@@ -1,12 +1,12 @@
 import { BulletIndicator } from "./BulletIndicator.ts";
-import { Bullet } from "./Bullet.ts";
+import { BaseBullet } from "./BaseBullet.ts";
 import { Canvas } from "./Canvas.ts";
 import type { IPosition } from "../types/Main.ts";
 
 const KEY_CODE_RELOAD = 82;
 
 export class BaseWeapon extends Canvas {
-  bullets: Bullet[];
+  bullets: BaseBullet[];
   nextBulletIndex = 0;
   bulletAmount: number;
   maxBulletAmount: number;
@@ -15,14 +15,11 @@ export class BaseWeapon extends Canvas {
   mousePosition: IPosition;
   center: IPosition;
 
-  constructor(maxBulletAmount: number) {
+  constructor(maxBulletAmount: number, bullet: BaseBullet) {
     super();
     this.maxBulletAmount = maxBulletAmount;
     this.bulletAmount = maxBulletAmount;
-    this.bullets = Array.from(
-      { length: this.maxBulletAmount },
-      () => new Bullet(),
-    );
+    this.bullets = Array.from({ length: this.maxBulletAmount }, () => bullet);
     this.bulletIndicator = new BulletIndicator(maxBulletAmount);
     this.fireBlockingState = false;
     this.initRenderBulletCount();
@@ -83,6 +80,7 @@ export class BaseWeapon extends Canvas {
     this.canvas.addEventListener("mousedown", () => {
       if (this.fireBlockingState) return;
       if (this.nextBulletIndex >= this.maxBulletAmount) return;
+      this.bullets[this.nextBulletIndex].setMousePosition(this.mousePosition);
       this.bullets[this.nextBulletIndex].setPosition(this.center);
       this.bullets[this.nextBulletIndex].setDirection(
         this.calculationDirectionForBullet(this.mousePosition),
